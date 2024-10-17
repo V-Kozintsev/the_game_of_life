@@ -43,6 +43,6 @@ module.exports = {
     port: 9000, // Порт для dev server
   },
   resolve: {
-    extensions: ['.js', '.css'], // Автоматическое добавление расширений
+    extensions: ['.js', '.ts', '.css'], // Автоматическое добавление расширений
   },
 };

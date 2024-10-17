@@ -1,5 +1,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
+import eslintJest from "eslint-plugin-jest"; // импортируем плагин jest
 
 import { FlatCompat } from "@eslint/eslintrc";
 import path from "path";
@@ -35,6 +36,19 @@ export default [
   },
   {
     // Настраиваем плагин jest
-    plugins: {},
+    plugins: {
+      jest: {
+        overrides: [
+          {
+            files: ["**/*.js"], // Указываем, какие файлы следует обрабатывать плагином Jest
+            rules: {
+              "jest/no-disabled-tests": "warn", // Настройка правил плагина Jest
+              "jest/no-focused-tests": "error",
+              "jest/prefer-to-have-length": "warn",
+            },
+          },
+        ],
+      },
+    },
   },
 ];
