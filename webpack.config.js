@@ -1,51 +1,73 @@
-const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: { main: path.resolve(__dirname, './src/index.ts') },
-  resolve: {
-    extensions: ['.ts', '.js', '.css', '.tsx'], // Объединяем обе секции resolve
+  mode: "development", // Вы можете изменить на 'development' при необходимости
+  entry: {
+    main: path.resolve(__dirname, "./src/index.ts"), // Измените на .ts, если используете TypeScript
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].main.js', // Изменил на .js, так как это точка входа
-    clean: true,
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].main.ts", // Имя выходного файла
+    clean: true, // Очищает output папку перед новой сборкой
   },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'src/index.html',
+      filename: "index.html",
+      template: "src/index.html",
+    }),
+    new MiniCssExtractPlugin({
+      filename: "./css/style.css", // Имя выходного файла для CSS
+      chunkFilename: "[id].css",
     }),
   ],
   module: {
     rules: [
       {
-        test: /\.(js|mjs|cjs|ts)$/,
+        test: /\.(html)$/,
+        use: [
+          {
+            loader: "html-loader",
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, // Извлечение CSS
+          "css-loader", // Обработка CSS
+        ],
+      },
+      {
+        test: /\.(js|mjs|cjs|ts)$/, // Поддержка JS и TS
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: [['@babel/preset-env', { targets: 'defaults' }]],
+            presets: [["@babel/preset-env", { targets: "defaults" }]],
           },
         },
       },
       {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        type: 'asset/resource',
+        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i, // Поддержка изображений и шрифтов
+        type: "asset/resource",
+        generator: {
+          filename: "images/[hash][ext][query]", // Путь, куда будут сохраняться изображения
+        },
       },
     ],
   },
+  resolve: {
+    extensions: [".js", ".ts", ".css", ".tsx"], // Автоматическое добавление расширений
+  },
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, "public"),
     },
-    compress: true,
-    port: 9000,
+    compress: true, // Включает сжатие
+    port: 9000, // Порт для dev server
   },
 };
