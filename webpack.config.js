@@ -4,14 +4,14 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development", // Вы можете изменить на 'development' при необходимости
-  entry: {
-    main: path.resolve(__dirname, "./src/index.ts"), // Измените на .ts, если используете TypeScript
+  entry: { main: path.resolve(__dirname, "./src/index.ts") },
+  resolve: {
+    extensions: [".ts", ".js", ".css", ".tsx"], // Объединяем обе секции resolve
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].main.ts", // Имя выходного файла
-    clean: true, // Очищает output папку перед новой сборкой
+    filename: "[name].main.js", // Изменил на .js, так как это точка входа
+    clean: true,
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -27,6 +27,24 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.(js|mjs|cjs|ts)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [["@babel/preset-env", { targets: "defaults" }]],
+          },
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        type: "asset/resource",
+      },
+      {
         test: /\.(html)$/,
         use: [
           {
@@ -41,33 +59,13 @@ module.exports = {
           "css-loader", // Обработка CSS
         ],
       },
-      {
-        test: /\.(js|mjs|cjs|ts)$/, // Поддержка JS и TS
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [["@babel/preset-env", { targets: "defaults" }]],
-          },
-        },
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i, // Поддержка изображений и шрифтов
-        type: "asset/resource",
-        generator: {
-          filename: "images/[hash][ext][query]", // Путь, куда будут сохраняться изображения
-        },
-      },
     ],
-  },
-  resolve: {
-    extensions: [".js", ".ts", ".css", ".tsx"], // Автоматическое добавление расширений
   },
   devServer: {
     static: {
       directory: path.join(__dirname, "public"),
     },
-    compress: true, // Включает сжатие
-    port: 9000, // Порт для dev server
+    compress: true,
+    port: 9000,
   },
 };
