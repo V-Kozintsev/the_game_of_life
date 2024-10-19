@@ -1,7 +1,7 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import eslintJest from "eslint-plugin-jest"; // импортируем плагин jest
-
+import tseslint from "typescript-eslint";
 import { FlatCompat } from "@eslint/eslintrc";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -25,6 +25,10 @@ export default [
   },
   pluginJs.configs.recommended,
   ...compat.extends("eslint-config-airbnb-base"),
+  ...tseslint.configs.recommended,
+  {
+    ignores: ["webpack.config.js", "jest.config.ts"],
+  },
   {
     rules: {
       "import/extensions": "off",
@@ -40,7 +44,7 @@ export default [
       jest: {
         overrides: [
           {
-            files: ["**/*.js"], // Указываем, какие файлы следует обрабатывать плагином Jest
+            files: ["**/*.ts"], // Указываем, какие файлы следует обрабатывать плагином Jest
             rules: {
               "jest/no-disabled-tests": "warn", // Настройка правил плагина Jest
               "jest/no-focused-tests": "error",

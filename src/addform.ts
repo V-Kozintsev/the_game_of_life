@@ -1,5 +1,3 @@
-// src/addform.js
-
 export function createForm() {
   // Создаем input элемент
   const input = document.createElement('input');

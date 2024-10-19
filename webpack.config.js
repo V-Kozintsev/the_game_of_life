@@ -3,11 +3,14 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: { main: path.resolve(__dirname, './src/index.ts') },
+  resolve: {
+    extensions: ['.ts', '.js', '.css', '.tsx'], // Объединяем обе секции resolve
+  },
   output: {
-    filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
-    clean: true, // Очищает output папку перед новым сборкой
+    filename: '[name].main.js', // Изменил на .js, так как это точка входа
+    clean: true,
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -19,19 +22,22 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/, // Применяется ко всем .js файлам
-        exclude: /node_modules/, // Исключить папку node_modules
+        test: /\.(js|mjs|cjs|ts)$/,
+        exclude: /node_modules/,
         use: {
-          loader: 'babel-loader', // Используем babel-loader для обработки JS
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', { targets: 'defaults' }]],
+          },
         },
       },
       {
-        test: /\.css$/, // Регулярное выражение для нахождения файлов .css
+        test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/, // Для обработки изображений и шрифтов
-        type: 'asset/resource', // Webpack 5 использует asset module
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        type: 'asset/resource',
       },
     ],
   },
@@ -39,10 +45,7 @@ module.exports = {
     static: {
       directory: path.join(__dirname, 'public'),
     },
-    compress: true, // Включает сжатие
-    port: 9000, // Порт для dev server
-  },
-  resolve: {
-    extensions: ['.js', '.ts', '.css'], // Автоматическое добавление расширений
+    compress: true,
+    port: 9000,
   },
 };

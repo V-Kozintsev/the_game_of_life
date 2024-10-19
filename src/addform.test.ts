@@ -1,5 +1,3 @@
-// src/addform.test.js
-
 import { createForm } from './addform';
 
 describe('createForm', () => {
