@@ -1,0 +1,22 @@
+#mainBoxId {
+  display: grid;
+}
+
+.grid-row {
+  display: flex;
+}
+
+.grid-cell {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.grid-cell.alive {
+  background-color: black;
+}
+
+.grid-cell.dead {
+  background-color: white;
+}
